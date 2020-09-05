@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
 @Deprecated
 @Slf4j
 @RequestMapping("/api/v1/beer")
@@ -36,7 +37,7 @@ public class BeerController {
     }
 
     @PutMapping("/{beerId}")
-    public ResponseEntity handleUpdate(@PathVariable("beerId") UUID beerId,@RequestBody BeerDto beerDto) {
+    public ResponseEntity handleUpdate(@PathVariable("beerId") UUID beerId, @RequestBody BeerDto beerDto) {
         beerService.updateBeer(beerId, beerDto);
         return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
@@ -44,7 +45,7 @@ public class BeerController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{beerId}")
     public void deleteBeer(@PathVariable("beerId") UUID beerId) {
-        log.debug("Deleting Beer {}" + beerId);
+        log.debug("Deleting Beer {0}" + beerId);
         beerService.deleteBeerById(beerId);
     }
 

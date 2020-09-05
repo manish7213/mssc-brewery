@@ -1,16 +1,16 @@
 package com.manish.sfg.msscbrewery.controller;
 
+import com.manish.sfg.msscbrewery.model.BeerDto;
 import com.manish.sfg.msscbrewery.model.CustomerDto;
 import com.manish.sfg.msscbrewery.service.CustomerService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
+@Slf4j
 @RequestMapping("/api/v1/customer")
 @RestController
 public class CustomerControlller {
@@ -26,4 +26,27 @@ public class CustomerControlller {
 
         return new ResponseEntity<>(customerService.getCustomerById(custId), HttpStatus.OK);
     }
+
+    @PostMapping
+    public ResponseEntity handlePost(@RequestBody CustomerDto customerDto) {
+        CustomerDto savedDto = customerService.saveNewCustomer(customerDto);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        //todo: Get complete URL as headerValue
+        httpHeaders.add("Location", "/api/v1/customer/" + savedDto.getId().toString());
+        return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{customerId}")
+    public ResponseEntity handleUpdate(@PathVariable("customerId") UUID customerId, @RequestBody CustomerDto customerDto) {
+        customerService.updateCustomer(customerId, customerDto);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{customerId}")
+    public void deleteBeer(@PathVariable("customerId") UUID customerId) {
+        log.debug("Deleting Beer {0}" + customerId);
+        customerService.deleteBeerById(customerId);
+    }
+
 }
